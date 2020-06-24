@@ -31,3 +31,11 @@ class UpvoteSerializer(ModelSerializer):
         fields = (
             'upvotes',
         )
+
+
+class DownvoteSerializer(ModelSerializer):
+    class Meta:
+        model = Post
+        fields = (
+            'downvotes',
+        )

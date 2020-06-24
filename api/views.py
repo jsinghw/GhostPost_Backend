@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from django.db.models import F
 
-from api.serializers import PostSerializer, UpvoteSerializer
+from api.serializers import PostSerializer, UpvoteSerializer, DownvoteSerializer
 from api.models import Post
 
 
@@ -18,6 +18,17 @@ class PostViewSet(ModelViewSet):
     def upvote(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = UpvoteSerializer(
+            instance=instance,
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get', 'put'])
+    def downvote(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = DownvoteSerializer(
             instance=instance,
             data=request.data
         )
