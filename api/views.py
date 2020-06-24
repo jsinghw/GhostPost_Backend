@@ -12,11 +12,18 @@ class PostViewSet(ModelViewSet):
     serializer_class = PostSerializer
     queryset = Post.objects.all()
 
-    @action(detail=True, methods=['post'])
-    def upvote(self, request, pk=None, format=None):
-        sp_post = self.get_object()
-        sp_post['upvotes'] = request.data['upvotes']
-        sp_post.save()
+# Update under understanding different types of serializers
+# https://medium.com/profil-software-blog/10-things-you-need-to-know-to-effectively-use-django-rest-framework-7db7728910e0
+    @action(detail=True, methods=['get', 'put'])
+    def upvote(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = UpvoteSerializer(
+            instance=instance,
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
     @action(detail=False)
     def boasts(self, request):

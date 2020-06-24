@@ -1,10 +1,11 @@
 from rest_framework.serializers import ModelSerializer
-from rest_framework.serializers import HyperlinkedModelSerializer
 from rest_framework.serializers import SerializerMethodField
 
 from api.models import Post
 
 
+# help understading vote_score
+# https://django.cowhite.com/blog/dynamic-fields-in-django-rest-framwork-serializers/
 class PostSerializer(ModelSerializer):
     vote_score = SerializerMethodField(method_name='calculate_vote_score')
 
@@ -28,6 +29,5 @@ class UpvoteSerializer(ModelSerializer):
     class Meta:
         model = Post
         fields = (
-            'id',
-            'upvotes'
+            'upvotes',
         )
