@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework.serializers import SerializerMethodField
+from django.utils import dateformat
 
 from api.models import Post
 
@@ -8,6 +9,7 @@ from api.models import Post
 # https://django.cowhite.com/blog/dynamic-fields-in-django-rest-framwork-serializers/
 class PostSerializer(ModelSerializer):
     vote_score = SerializerMethodField(method_name='calculate_vote_score')
+    uploaded_date = SerializerMethodField(method_name='calculate_date_time')
 
     class Meta:
         model = Post
@@ -18,11 +20,15 @@ class PostSerializer(ModelSerializer):
             'upvotes',
             'downvotes',
             'vote_score',
-            'upload_date'
+            'uploaded_date'
         )
 
     def calculate_vote_score(self, instance):
         return (instance.upvotes - instance.downvotes)
+
+    def calculate_date_time(self, instance):
+        return (dateformat.format(instance.upload_date, 'g:i A M d,Y'))
+        # return instance.upload_date
 
 
 class UpvoteSerializer(ModelSerializer):
